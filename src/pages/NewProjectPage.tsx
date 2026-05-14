@@ -7,7 +7,7 @@ export function NewProjectPage() {
       <header className="page-header">
         <p className="eyebrow">새 프로젝트 선택</p>
         <h1>어떤 방식으로 숏폼을 만들까요?</h1>
-        <p>MVP에서는 로드맵 1차 범위인 사진 기반 숏폼 제작만 활성화합니다.</p>
+        <p>로그인한 사용자 워크스페이스에 새 프로젝트를 만들고, MVP에서는 사진 기반 숏폼 제작만 활성화합니다.</p>
       </header>
 
       <div className="option-grid">

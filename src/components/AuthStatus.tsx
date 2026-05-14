@@ -1,63 +1,50 @@
-import { useEffect, useState } from 'react';
-import type { Session } from '@supabase/supabase-js';
-import { isSupabaseConfigured, supabase } from '../lib/supabase';
+import { useState } from 'react';
+import { useAuth } from '../auth/AuthProvider';
 
 export function AuthStatus() {
+  const { isConfigured, isLoading, userEmail, signInWithMagicLink, signOut } = useAuth();
   const [email, setEmail] = useState('');
-  const [session, setSession] = useState<Session | null>(null);
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    if (!supabase) {
-      return;
-    }
-
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession);
-    });
-
-    return () => subscription.subscription.unsubscribe();
-  }, []);
-
   const handleMagicLink = async () => {
-    if (!supabase || !email) {
+    if (!email) {
       return;
     }
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: window.location.origin,
-      },
-    });
-
-    setMessage(error ? error.message : '로그인 링크를 이메일로 보냈습니다.');
+    const result = await signInWithMagicLink(email);
+    setMessage(result.error ?? '로그인 링크를 이메일로 보냈습니다.');
   };
 
   const handleSignOut = async () => {
-    if (!supabase) {
-      return;
-    }
-
-    await supabase.auth.signOut();
+    await signOut();
     setMessage('로그아웃되었습니다.');
   };
 
-  if (!isSupabaseConfigured) {
+  if (!isConfigured) {
     return (
       <div className="auth-card muted">
         <strong>Supabase Auth 연결 준비</strong>
-        <p>.env에 VITE_SUPABASE_URL과 VITE_SUPABASE_ANON_KEY를 설정하면 매직링크 로그인을 사용할 수 있습니다.</p>
+        <p>.env에 VITE_SUPABASE_URL과 VITE_SUPABASE_ANON_KEY를 설정하면 사용자별 로그인을 사용할 수 있습니다.</p>
       </div>
     );
   }
 
-  if (session?.user.email) {
+  if (isLoading) {
+    return (
+      <div className="auth-card muted">
+        <strong>로그인 확인 중</strong>
+        <p>세션을 불러오고 있습니다.</p>
+      </div>
+    );
+  }
+
+  if (userEmail) {
     return (
       <div className="auth-card">
-        <span>로그인됨</span>
-        <strong>{session.user.email}</strong>
+        <div>
+          <span>개인 워크스페이스</span>
+          <strong>{userEmail}</strong>
+        </div>
         <button type="button" onClick={handleSignOut}>
           로그아웃
         </button>

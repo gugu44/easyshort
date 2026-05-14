@@ -7,6 +7,8 @@ export type Project = {
   status: ProjectStatus;
   updatedAt: string;
   thumbnail: string;
+  ownerEmail: string;
+  usedStorageMb: number;
 };
 
 export const statusLabels: Record<ProjectStatus, string> = {
@@ -32,6 +34,8 @@ export const demoProjects: Project[] = [
     status: 'draft',
     updatedAt: '2026-05-14T09:30:00.000Z',
     thumbnail: '☕',
+    ownerEmail: 'you@example.com',
+    usedStorageMb: 180,
   },
   {
     id: 'demo-photo-002',
@@ -40,6 +44,8 @@ export const demoProjects: Project[] = [
     status: 'rendering',
     updatedAt: '2026-05-13T15:10:00.000Z',
     thumbnail: '🌸',
+    ownerEmail: 'you@example.com',
+    usedStorageMb: 420,
   },
   {
     id: 'demo-photo-003',
@@ -48,6 +54,8 @@ export const demoProjects: Project[] = [
     status: 'completed',
     updatedAt: '2026-05-12T21:45:00.000Z',
     thumbnail: '💪',
+    ownerEmail: 'you@example.com',
+    usedStorageMb: 230,
   },
 ];
 
@@ -83,3 +91,18 @@ export const projectTypeOptions = [
     enabled: false,
   },
 ] as const;
+
+
+export const currentUserPlan = {
+  name: 'Free',
+  monthlyProjectLimit: 10,
+  storageLimitMb: 1024,
+  renderCreditLimit: 30,
+};
+
+export function getProjectsForUser(userEmail: string | null) {
+  return demoProjects.map((project) => ({
+    ...project,
+    ownerEmail: userEmail ?? project.ownerEmail,
+  }));
+}
