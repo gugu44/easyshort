@@ -9,8 +9,9 @@ EasyShort는 롱폼 영상, 숏폼 영상, 일반 영상, 사진, 대본을 입�
 - React + Vite 기반 프론트엔드 앱
 - Cloudflare Pages 배포 설정(`wrangler.toml`)
 - Supabase Auth 클라이언트 연결 골격
-- React Router 기반 기본 라우팅
-- 대시보드와 새 프로젝트 생성 화면
+- React Router 기반 보호 라우팅과 로그인 화면
+- 사용자별 대시보드와 새 프로젝트 생성 화면
+- 무료 플랜 기준 사용량 카드
 
 제품 기획 문서는 아래에서 확인할 수 있습니다.
 
@@ -35,7 +36,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Supabase Auth를 실제로 사용하려면 `.env`에 아래 값을 채워 넣습니다.
+사용자별 B2C 로그인 플로우를 실제로 사용하려면 `.env`에 아래 값을 채워 넣습니다.
 
 ```bash
 VITE_SUPABASE_URL="https://your-project.supabase.co"
@@ -51,6 +52,7 @@ VITE_SUPABASE_ANON_KEY="your-public-anon-key"
 ## 다음 구현 순서
 
 1. Supabase 프로젝트/Storage 준비
-2. `projects`, `assets` 테이블 마이그레이션 작성
-3. 사진 업로드 및 진행률 UI 구현
+2. `user_id`와 RLS 정책이 포함된 `projects`, `assets` 테이블 마이그레이션 작성
+3. 사용자별 사진 업로드 및 진행률 UI 구현
 4. 사진 순서 변경과 직접 대본 작성 화면 연결
+5. 플랜별 quota와 billing 연동

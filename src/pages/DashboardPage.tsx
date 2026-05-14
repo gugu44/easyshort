@@ -1,6 +1,13 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../auth/AuthProvider';
 import { AuthStatus } from '../components/AuthStatus';
-import { demoProjects, statusLabels, typeLabels, type ProjectStatus } from '../data/projects';
+import {
+  currentUserPlan,
+  getProjectsForUser,
+  statusLabels,
+  typeLabels,
+  type ProjectStatus,
+} from '../data/projects';
 
 const filters: Array<'all' | ProjectStatus> = ['all', 'draft', 'rendering', 'completed', 'failed'];
 
@@ -10,17 +17,22 @@ const filterLabels: Record<(typeof filters)[number], string> = {
 };
 
 export function DashboardPage() {
-  const completedCount = demoProjects.filter((project) => project.status === 'completed').length;
+  const { userEmail } = useAuth();
+  const userProjects = getProjectsForUser(userEmail);
+  const completedCount = userProjects.filter((project) => project.status === 'completed').length;
+  const storageUsedMb = userProjects.reduce((total, project) => total + project.usedStorageMb, 0);
+  const storageUsedGb = (storageUsedMb / 1024).toFixed(1);
+  const storageLimitGb = (currentUserPlan.storageLimitMb / 1024).toFixed(0);
 
   return (
     <section className="page-stack">
       <header className="hero-card">
         <div>
-          <p className="eyebrow">Phase 1 · 프로젝트 기반 구축</p>
-          <h1>사진 기반 숏폼 MVP를 시작하세요.</h1>
+          <p className="eyebrow">B2C MVP · 개인 워크스페이스</p>
+          <h1>{userEmail ? `${userEmail}님의 숏폼 스튜디오` : '내 숏폼 스튜디오'}</h1>
           <p>
-            로드맵의 첫 구현 단계에 맞춰 대시보드, 프로젝트 생성, Supabase 연결 상태를 확인할 수 있는
-            기본 워크스페이스를 구성했습니다.
+            로그인한 사용자 기준으로 프로젝트, 업로드 파일, 렌더링 결과, 월간 사용량을 분리해 관리하도록
+            대시보드 구조를 전환했습니다.
           </p>
         </div>
         <Link className="primary-button" to="/projects/new">
@@ -33,8 +45,10 @@ export function DashboardPage() {
       <div className="metric-grid" aria-label="사용량 요약">
         <article className="metric-card">
           <span>이번 달 생성</span>
-          <strong>{demoProjects.length}</strong>
-          <small>무료 테스트 프로젝트</small>
+          <strong>
+            {userProjects.length}/{currentUserPlan.monthlyProjectLimit}
+          </strong>
+          <small>{currentUserPlan.name} 플랜 프로젝트 한도</small>
         </article>
         <article className="metric-card">
           <span>완료</span>
@@ -43,16 +57,18 @@ export function DashboardPage() {
         </article>
         <article className="metric-card">
           <span>저장소</span>
-          <strong>0.8GB</strong>
-          <small>Supabase Storage 예정</small>
+          <strong>
+            {storageUsedGb}GB/{storageLimitGb}GB
+          </strong>
+          <small>사용자별 Supabase Storage 사용량</small>
         </article>
       </div>
 
       <section className="content-card">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Projects</p>
-            <h2>프로젝트 목록</h2>
+            <p className="eyebrow">My Projects</p>
+            <h2>내 프로젝트 목록</h2>
           </div>
           <div className="filter-row" aria-label="프로젝트 상태 필터">
             {filters.map((filter) => (
@@ -64,7 +80,7 @@ export function DashboardPage() {
         </div>
 
         <div className="project-grid">
-          {demoProjects.map((project) => (
+          {userProjects.map((project) => (
             <article className="project-card" key={project.id}>
               <div className="project-thumbnail" aria-hidden="true">
                 {project.thumbnail}
@@ -73,7 +89,10 @@ export function DashboardPage() {
                 <span className={`badge ${project.status}`}>{statusLabels[project.status]}</span>
                 <h3>{project.title}</h3>
                 <p>{typeLabels[project.type]}</p>
-                <small>최근 수정: {new Intl.DateTimeFormat('ko-KR').format(new Date(project.updatedAt))}</small>
+                <small>
+                  소유자: {project.ownerEmail} · 최근 수정:{' '}
+                  {new Intl.DateTimeFormat('ko-KR').format(new Date(project.updatedAt))}
+                </small>
               </div>
               <div className="project-actions">
                 <Link to={`/projects/${project.id}/photos/upload`}>이어서 편집</Link>

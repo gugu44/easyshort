@@ -248,3 +248,89 @@ provider
 6. mock/free TTS 구현
 7. render_jobs 상태 모델 구현
 8. 브라우저 렌더링 또는 외부 렌더링 job 연결
+
+## 7. B2C 사용자/권한 설계
+
+### 7.1 인증 흐름
+
+- 1차 MVP는 Supabase Auth 이메일 매직링크 로그인을 기본으로 사용합니다.
+- 모든 보호 화면은 세션 확인 후 접근시키고, 비로그인 사용자는 `/login`으로 보냅니다.
+- 로그인 성공 후에는 사용자가 처음 접근하려던 경로 또는 `/dashboard`로 복귀합니다.
+- Edge Function/Worker 호출 시 Supabase JWT를 전달해 서버에서 `auth.uid()`와 요청 소유자를 검증합니다.
+
+### 7.2 사용자별 데이터 소유권
+
+- 모든 핵심 테이블은 `user_id uuid not null references auth.users(id)`를 포함합니다.
+- `projects.id`만으로 데이터를 조회하지 않고 항상 `user_id + id` 조건을 함께 사용합니다.
+- Storage object path는 `users/{user_id}/projects/{project_id}/...` 규칙을 사용합니다.
+- 렌더링 워커가 결과를 저장할 때도 job의 `user_id`를 기준으로 output path를 생성합니다.
+
+### 7.3 RLS 정책 초안
+
+```sql
+alter table projects enable row level security;
+
+create policy "Users can read own projects"
+  on projects for select
+  using (auth.uid() = user_id);
+
+create policy "Users can create own projects"
+  on projects for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own projects"
+  on projects for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "Users can delete own projects"
+  on projects for delete
+  using (auth.uid() = user_id);
+```
+
+동일한 원칙을 `assets`, `scripts`, `transcripts`, `render_jobs`, `api_provider_settings`에 적용합니다.
+
+### 7.4 플랜/사용량 테이블 추가
+
+#### profiles
+
+```txt
+id -- auth.users.id
+email
+plan_id
+display_name
+created_at
+updated_at
+```
+
+#### plans
+
+```txt
+id
+name
+monthly_project_limit
+render_credit_limit
+storage_limit_mb
+price_monthly
+created_at
+```
+
+#### usage_counters
+
+```txt
+id
+user_id
+period_month
+project_count
+render_credit_used
+storage_used_mb
+updated_at
+```
+
+### 7.5 Quota 체크 지점
+
+- `POST /projects`: 월간 프로젝트 생성 한도를 확인합니다.
+- `POST /assets/upload-url`: 사용자 저장소 한도와 파일 크기를 확인합니다.
+- `POST /scripts/generate`: 무료 플랜 AI 생성 횟수 또는 크레딧을 확인합니다.
+- `POST /voice/generate`: TTS provider 비용이 발생하기 전에 크레딧을 확인합니다.
+- `POST /render-jobs`: 렌더 크레딧과 동시 job 수를 확인합니다.
