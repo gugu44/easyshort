@@ -1,0 +1,429 @@
+:root {
+  color: #172033;
+  background: #f5f7fb;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a.primary-button {
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.78rem 1.1rem;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: #101828;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.brand {
+  align-items: center;
+  display: flex;
+  gap: 0.9rem;
+}
+
+.brand-mark {
+  align-items: center;
+  background: linear-gradient(135deg, #7c3aed, #06b6d4);
+  border-radius: 1rem;
+  display: inline-flex;
+  font-weight: 900;
+  height: 3rem;
+  justify-content: center;
+  width: 3rem;
+}
+
+.brand small,
+.provider-card p {
+  color: #b7c1d6;
+  display: block;
+  margin: 0.2rem 0 0;
+}
+
+.nav-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.nav-list a {
+  border-radius: 0.9rem;
+  color: #d7def0;
+  padding: 0.9rem 1rem;
+}
+
+.nav-list a.active,
+.nav-list a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.provider-card {
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1.1rem;
+  display: flex;
+  gap: 0.8rem;
+  margin-top: auto;
+  padding: 1rem;
+}
+
+.status-dot {
+  background: #f59e0b;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  height: 0.75rem;
+  margin-top: 0.3rem;
+  width: 0.75rem;
+}
+
+.status-dot.ok {
+  background: #22c55e;
+}
+
+.main-panel {
+  padding: 2.5rem;
+}
+
+.page-stack {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.hero-card,
+.content-card,
+.metric-card,
+.option-card {
+  background: white;
+  border: 1px solid #e4e9f3;
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 60px rgba(16, 24, 40, 0.06);
+}
+
+.hero-card {
+  align-items: center;
+  display: flex;
+  gap: 1.5rem;
+  justify-content: space-between;
+  padding: 2rem;
+}
+
+.hero-card h1,
+.page-header h1,
+.empty-state h1 {
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  line-height: 1.05;
+  margin: 0.4rem 0 1rem;
+}
+
+.hero-card p,
+.page-header p,
+.option-card p,
+.project-body p {
+  color: #667085;
+  line-height: 1.65;
+}
+
+.eyebrow {
+  color: #7c3aed;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.primary-button {
+  background: #7c3aed;
+  color: white;
+  display: inline-flex;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.metric-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.metric-card,
+.content-card,
+.option-card {
+  padding: 1.4rem;
+}
+
+.metric-card span,
+.metric-card small,
+.project-body small {
+  color: #667085;
+}
+
+.metric-card strong {
+  display: block;
+  font-size: 2.2rem;
+  margin: 0.4rem 0;
+}
+
+.section-heading {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1.2rem;
+}
+
+.section-heading h2,
+.option-card h2,
+.checklist-card h2 {
+  margin: 0.35rem 0 0;
+}
+
+.filter-row {
+  background: #f2f4f8;
+  border-radius: 999px;
+  display: flex;
+  padding: 0.25rem;
+}
+
+.filter-row button {
+  background: transparent;
+  color: #667085;
+  padding: 0.55rem 0.8rem;
+}
+
+.filter-row button.active {
+  background: white;
+  color: #172033;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.08);
+}
+
+.project-grid,
+.option-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.project-card {
+  align-items: center;
+  border: 1px solid #edf0f6;
+  border-radius: 1.1rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  padding: 1rem;
+}
+
+.project-thumbnail {
+  align-items: center;
+  background: #f2f4ff;
+  border-radius: 1rem;
+  display: flex;
+  font-size: 2rem;
+  height: 5rem;
+  justify-content: center;
+  width: 5rem;
+}
+
+.project-body h3 {
+  margin: 0.45rem 0 0.1rem;
+}
+
+.badge {
+  background: #eef2ff;
+  border-radius: 999px;
+  color: #4f46e5;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.3rem 0.65rem;
+}
+
+.badge.rendering {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.badge.completed {
+  background: #ecfdf3;
+  color: #15803d;
+}
+
+.badge.failed {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.project-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.project-actions a,
+.project-actions button {
+  background: #f2f4f8;
+  border-radius: 999px;
+  color: #344054;
+  padding: 0.7rem 0.9rem;
+}
+
+.page-header {
+  max-width: 820px;
+}
+
+.option-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.option-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  justify-content: space-between;
+  min-height: 240px;
+}
+
+.option-card.enabled {
+  border-color: #c4b5fd;
+  box-shadow: 0 24px 70px rgba(124, 58, 237, 0.14);
+}
+
+.option-card button:not(.primary-button) {
+  background: #eef2f7;
+  color: #667085;
+}
+
+.checklist-card ol {
+  color: #475467;
+  line-height: 1.9;
+}
+
+.checklist-card a {
+  color: #7c3aed;
+  font-weight: 800;
+}
+
+.empty-state {
+  display: grid;
+  min-height: 70vh;
+  place-content: center;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+  }
+
+  .hero-card,
+  .section-heading,
+  .project-card {
+    align-items: stretch;
+    grid-template-columns: 1fr;
+  }
+
+  .hero-card,
+  .section-heading {
+    flex-direction: column;
+  }
+
+  .metric-grid,
+  .option-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.auth-card {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e4e9f3;
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 60px rgba(16, 24, 40, 0.05);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+}
+
+.auth-card.muted {
+  align-items: flex-start;
+  color: #475467;
+  display: block;
+}
+
+.auth-card p {
+  color: #667085;
+  margin: 0.4rem 0 0;
+}
+
+.auth-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.auth-form input {
+  border: 1px solid #d0d5dd;
+  border-radius: 999px;
+  font: inherit;
+  min-width: 260px;
+  padding: 0.75rem 1rem;
+}
+
+.auth-card button,
+.auth-form button {
+  background: #101828;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .auth-card,
+  .auth-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .auth-form input {
+    min-width: 0;
+    width: 100%;
+  }
+}
